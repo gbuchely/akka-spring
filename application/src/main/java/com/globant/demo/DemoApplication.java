@@ -25,6 +25,8 @@ public class DemoApplication {
 	private static final Logger log = LoggerFactory.getLogger(DemoApplication.class);
 
 	public static void main(String[] args) throws IOException {
+		SpringApplication.run(DemoApplication.class, args);
+		/*
 		final ApplicationContext context = SpringApplication.run(DemoApplication.class, args);
 		final ActorSystem system = context.getBean(ActorSystem.class);
 		final Http http = Http.get(system);
@@ -37,6 +39,7 @@ public class DemoApplication {
 				.bindAndHandle(flow, ConnectHttp.toHost("0.0.0.0", 8080), materializer);
 
 		log.info("Server online at http://localhost:8080/\nPress RETURN to stop...");
+		*/
 		/*
 		System.in.read();
 
