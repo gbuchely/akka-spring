@@ -1,0 +1,7 @@
+spring:
+  profiles:
+    active: ${ACTOR_PROFILE}
+app:
+    profile:
+      static: receiver
+      dynamic: ${ACTOR_PROFILE}

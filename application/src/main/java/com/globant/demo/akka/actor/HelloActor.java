@@ -9,15 +9,15 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component
-@Profile({"greeting", "hello"})
+@Profile("hello")
 @Scope("prototype")
-public class GreetingActor extends UntypedActor {
+public class HelloActor extends UntypedActor {
 
     private final LoggingAdapter log = Logging.getLogger(context().system(), this);
 
     private GreetingService greetingService;
 
-    public GreetingActor(GreetingService greetingService) {
+    public HelloActor(GreetingService greetingService) {
         this.greetingService = greetingService;
     }
 
@@ -26,7 +26,7 @@ public class GreetingActor extends UntypedActor {
         if (message instanceof Greet) {
             String name = ((Greet) message).getName();
             log.info("-> " + getSelf());
-            log.info("Message greet: {}", greetingService.greet(name));
+            log.info("Helloooooo: {}", greetingService.greet(name));
         } else {
             unhandled(message);
         }

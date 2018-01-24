@@ -1,7 +1,7 @@
 buildscript {
     ext {
         springBootVersion = '1.5.9.RELEASE'
-        akkaActorVersion = '2.5.9'
+        akkaVersion = '2.5.9'
         akkaHttpVersion = '10.0.11'
     }
     repositories {
@@ -27,10 +27,12 @@ repositories {
 
 dependencies {
     compile('org.springframework.boot:spring-boot-starter')
-    //compile("com.typesafe.akka:akka-actor_2.12:${akkaActorVersion}")
+    //compile("com.typesafe.akka:akka-actor_2.12:${akkaVersion}")
     compile("com.typesafe.akka:akka-http_2.12:${akkaHttpVersion}")
     compile("com.typesafe.akka:akka-http-jackson_2.12:${akkaHttpVersion}")
-    compile("org.springframework.boot:spring-boot-starter-web")
+    //compile("org.springframework.boot:spring-boot-starter-web")
+    compile("com.typesafe.akka:akka-cluster_2.12:${akkaVersion}")
+    compile("com.typesafe.akka:akka-cluster-metrics_2.12:${akkaVersion}")
 
     runtime('org.springframework.boot:spring-boot-devtools')
 

@@ -9,6 +9,7 @@ import akka.http.javadsl.model.HttpRequest;
 import akka.http.javadsl.model.HttpResponse;
 import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
+import com.globant.demo.controller.GreetingRouter;
 import com.globant.demo.controller.Router;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +26,11 @@ public class DemoApplication {
 	private static final Logger log = LoggerFactory.getLogger(DemoApplication.class);
 
 	public static void main(String[] args) throws IOException {
-		SpringApplication.run(DemoApplication.class, args);
-		/*
+		// REST SERVICE
+		//SpringApplication.run(DemoApplication.class, args);
+
+		//AKKA HTTP
+
 		final ApplicationContext context = SpringApplication.run(DemoApplication.class, args);
 		final ActorSystem system = context.getBean(ActorSystem.class);
 		final Http http = Http.get(system);
@@ -39,13 +43,21 @@ public class DemoApplication {
 				.bindAndHandle(flow, ConnectHttp.toHost("0.0.0.0", 8080), materializer);
 
 		log.info("Server online at http://localhost:8080/\nPress RETURN to stop...");
-		*/
+
 		/*
 		System.in.read();
 
 		binding
 				.thenCompose(ServerBinding::unbind)
 				.thenAccept(unbound -> system.terminate());
+		*/
+
+		// CLUSTER
+		/*
+		TransformationBackendMain.main(new String[] { "2551" });
+		TransformationBackendMain.main(new String[] { "2552" });
+		TransformationBackendMain.main(new String[0]);
+		TransformationFrontendMain.main(new String[0]);
 		*/
 	}
 }
