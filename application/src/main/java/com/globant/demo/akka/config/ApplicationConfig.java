@@ -24,7 +24,8 @@ public class ApplicationConfig {
 
   @Bean
   public ActorSystem actorSystem() {
-    final ActorSystem system = ActorSystem.create("default", akkaConfiguration());
+    //final ActorSystem system = ActorSystem.create("default", akkaConfiguration());
+    final ActorSystem system = ActorSystem.create("ClusterSystem", akkaConfiguration());
     springAkkaExtension.setApplicationContext(applicationContext);
     return system;
   }

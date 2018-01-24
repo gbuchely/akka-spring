@@ -30,7 +30,7 @@ public class TransformationBackend extends AbstractActor {
     public Receive createReceive() {
         return receiveBuilder()
                 .match(TransformationMessages.TransformationJob.class, job -> {
-                    sender().tell(new TransformationMessages.TransformationResult(job.getText().toUpperCase()),
+                    sender().tell(new TransformationMessages.TransformationResult(job.getText().toUpperCase() + " -> " + self()),
                             self());
                 })
                 .match(CurrentClusterState.class, state -> {

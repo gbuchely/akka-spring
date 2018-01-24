@@ -1,16 +1,23 @@
 version: '2'
 services:
 
-  greeting:
+#  greeting:
+#    build: application
+#    ports:
+#      - 8081:8080
+#    environment:
+#          ACTOR_PROFILE: greeting
+#
+#  hello:
+#    build: application
+#    ports:
+#      - 8082:8080
+#    environment:
+#          ACTOR_PROFILE: hello
+
+  cluster:
     build: application
     ports:
       - 8081:8080
     environment:
-          ACTOR_PROFILE: greeting
-
-  hello:
-    build: application
-    ports:
-      - 8082:8080
-    environment:
-          ACTOR_PROFILE: hello
+          ACTOR_PROFILE: executor,admin
