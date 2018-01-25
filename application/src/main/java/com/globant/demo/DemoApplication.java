@@ -37,7 +37,7 @@ public class DemoApplication {
 		//SpringApplication.run(DemoApplication.class, args);
 
 		//AKKA HTTP
-		/*
+
 		final ApplicationContext context = SpringApplication.run(DemoApplication.class, args);
 		final ActorSystem system = context.getBean(ActorSystem.class);
 		final Http http = Http.get(system);
@@ -49,7 +49,7 @@ public class DemoApplication {
 				.bindAndHandle(flow, ConnectHttp.toHost("0.0.0.0", 8080), materializer);
 
 		log.info("Server online at http://localhost:8080/\nPress RETURN to stop...");
-		*/
+
 		/*
 		System.in.read();
 
@@ -58,50 +58,5 @@ public class DemoApplication {
 				.thenAccept(unbound -> system.terminate());
 		*/
 
-		// CLUSTER
-
-		final ApplicationContext context = SpringApplication.run(DemoApplication.class, args);
-
-		final ActorSystem system = context.getBean(ActorSystem.class);
-		final Http http = Http.get(system);
-		final ActorMaterializer materializer = ActorMaterializer.create(system);
-
-		final ExecutorNode executor = context.getBean(ExecutorNode.class);
-		final AdminNode admin = context.getBean(AdminNode.class);
-
-
-		final Flow<HttpRequest, HttpResponse, NotUsed> flow = admin.createRoute().flow(system, materializer);
-		final CompletionStage<ServerBinding> binding = http
-				.bindAndHandle(flow, ConnectHttp.toHost("0.0.0.0", 8080), materializer);
-
-		log.info("Server online at http://localhost:8080/\nPress RETURN to stop...");
-
-		//executor.transform("2551", "[backend]", 2);
-		//executor.transform("2552", "[backend]", 2);
-		//executor.transform("0", "[backend]", 2);
-
-		//admin.transform("0", "[frontend]");
-
-		t1main(new String[] { "2551" });
-		t1main(new String[] { "2552" });
-		t1main(new String[0]);
-
 	}
-
-	public static void t1main(String[] args) {
-		// Override the configuration of the port when specified as program argument
-		final String port = args.length > 0 ? args[0] : "0";
-		final Config config =
-				ConfigFactory.parseString(
-						"akka.remote.netty.tcp.port=" + port + "\n" +
-								"akka.remote.artery.canonical.port=" + port)
-						.withFallback(ConfigFactory.parseString("akka.cluster.roles = [backend]"))
-						.withFallback(ConfigFactory.load());
-
-		ActorSystem system = ActorSystem.create("ClusterSystem", config);
-
-		system.actorOf(Props.create(TransformationBackend.class), "backend");
-
-	}
-
 }

@@ -22,6 +22,7 @@ import scala.concurrent.ExecutionContext;
 import scala.concurrent.duration.Duration;
 import scala.concurrent.duration.FiniteDuration;
 
+import javax.annotation.PostConstruct;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -38,6 +39,11 @@ public class AdminNode extends AllDirectives {
   public AdminNode(ActorSystem actorSystem, SpringExtension springExtension) {
     this.system = actorSystem;
       runtimeActor = null;
+  }
+
+  @PostConstruct
+  private void init() {
+      transform("0", "[frontend]");
   }
 
   public void transform(String port, String role) {

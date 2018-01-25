@@ -22,6 +22,7 @@ import scala.concurrent.ExecutionContext;
 import scala.concurrent.duration.Duration;
 import scala.concurrent.duration.FiniteDuration;
 
+import javax.annotation.PostConstruct;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -39,6 +40,13 @@ public class ExecutorNode extends AllDirectives {
     this.system = actorSystem;
       runtimeActor = null;
   }
+
+    @PostConstruct
+    private void init() {
+        transform("2551", "[backend]", 1);
+        transform("2552", "[backend]", 1);
+        //transform("0", "[backend]", 2);
+    }
 
   public void transform(String port, String role, int poolSize) {
     final Config config = doConfig(port, role);
