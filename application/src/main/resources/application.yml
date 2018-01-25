@@ -1,6 +1,17 @@
-spring:
-  profiles:
-    active: ${ACTOR_PROFILE}
 app:
   cluster:
     node: ${ACTOR_PROFILE}
+
+spring:
+  output:
+    ansi:
+      enabled: always
+  main:
+    web-environment: ${WEB_ENVIRONMENT}
+  profiles:
+    active: ${ACTOR_PROFILE}
+logging:
+  level:
+    ROOT: warn
+    akka.cluster: info
+    com.sqshq: info

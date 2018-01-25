@@ -3,6 +3,7 @@ buildscript {
         springBootVersion = '1.5.9.RELEASE'
         akkaVersion = '2.5.9'
         akkaHttpVersion = '10.0.11'
+        constructrVersion = '0.18.1'
     }
     repositories {
         mavenCentral()
@@ -22,6 +23,7 @@ sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 
@@ -30,9 +32,15 @@ dependencies {
     //compile("com.typesafe.akka:akka-actor_2.12:${akkaVersion}")
     compile("com.typesafe.akka:akka-http_2.12:${akkaHttpVersion}")
     compile("com.typesafe.akka:akka-http-jackson_2.12:${akkaHttpVersion}")
-    //compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-starter-websocket")
     compile("com.typesafe.akka:akka-cluster_2.12:${akkaVersion}")
+    compile("com.typesafe.akka:akka-cluster-tools_2.12:${akkaVersion}")
+    compile("com.typesafe.akka:akka-distributed-data_2.12:${akkaVersion}")
+    compile("com.typesafe.akka:akka-slf4j_2.12:${akkaVersion}")
     compile("com.typesafe.akka:akka-cluster-metrics_2.12:${akkaVersion}")
+    compile("de.heikoseeberger:constructr_2.12:${constructrVersion}")
+    compile("de.heikoseeberger:constructr-coordination-etcd_2.12:${constructrVersion}")
 
     runtime('org.springframework.boot:spring-boot-devtools')
 

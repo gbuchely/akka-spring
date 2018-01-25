@@ -4,7 +4,7 @@ import akka.actor.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class SpringExtension implements Extension {
   private ApplicationContext applicationContext;
 

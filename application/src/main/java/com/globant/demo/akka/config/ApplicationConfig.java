@@ -10,19 +10,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-@Configuration
+//@Configuration
 public class ApplicationConfig {
 
   private final ApplicationContext applicationContext;
   private final SpringExtension springAkkaExtension;
 
-  @Autowired
+  //@Autowired
   public ApplicationConfig(ApplicationContext applicationContext, SpringExtension springAkkaExtension) {
     this.applicationContext = applicationContext;
     this.springAkkaExtension = springAkkaExtension;
   }
 
-  @Bean
+  //@Bean
   public ActorSystem actorSystem() {
     //final ActorSystem system = ActorSystem.create("default", akkaConfiguration());
     final ActorSystem system = ActorSystem.create("ClusterSystem", akkaConfiguration());
@@ -30,7 +30,7 @@ public class ApplicationConfig {
     return system;
   }
 
-  @Bean
+  //@Bean
   public Config akkaConfiguration() {
     return ConfigFactory.load();
   }

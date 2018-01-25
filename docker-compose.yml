@@ -1,19 +1,19 @@
-version: '2'
-services:
-
-  greeting:
-    build: application
-    ports:
-      - 8081:8080
-    environment:
-          ACTOR_PROFILE: greeting
-
-  hello:
-    build: application
-    ports:
-      - 8082:8080
-    environment:
-          ACTOR_PROFILE: hello
+#version: '2'
+#services:
+#
+#  greeting:
+#    build: application
+#    ports:
+#      - 8081:8080
+#    environment:
+#          ACTOR_PROFILE: greeting
+#
+#  hello:
+#    build: application
+#    ports:
+#      - 8082:8080
+#    environment:
+#          ACTOR_PROFILE: hello
 
 #  cluster:
 #    build: application
@@ -21,3 +21,42 @@ services:
 #      - 8081:8080
 #    environment:
 #          ACTOR_PROFILE: executor,admin
+
+version: '2'
+services:
+
+  etcd:
+    image: akk
+    ports:
+      - 2379:2379
+    environment:
+      ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2379
+      ETCD_ADVERTISE_CLIENT_URLS: http://localhost:2379
+
+  receiver:
+    build: application
+    depends_on:
+      - etcd
+    ports:
+      - 10000:8080
+    environment:
+      SPRING_PROFILES_ACTIVE: receiver
+      WEB_ENVIRONMENT: 'true'
+
+  processor:
+    build: application
+    depends_on:
+      - etcd
+    environment:
+      SPRING_PROFILES_ACTIVE: processor
+      WEB_ENVIRONMENT: 'false'
+
+  transmitter:
+    build: application
+    depends_on:
+      - etcd
+    environment:
+      SPRING_PROFILES_ACTIVE: transmitter
+      WEB_ENVIRONMENT: 'true'
+    ports:
+      - 20000:8080
