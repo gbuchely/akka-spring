@@ -1,8 +1,9 @@
-package com.globant.demo.receiver;
+package com.globant.demo.actor.consumer;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import com.globant.demo.config.spring.SpringProps;
+import com.globant.demo.receiver.ReceiverActor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
 @RestController
-@Profile("receiver")
-public class ReceiverController {
+@Profile("consumer")
+public class ConsumerController {
 
     @Autowired
     private ActorSystem system;
@@ -21,8 +22,8 @@ public class ReceiverController {
     @RequestMapping(value = "/sensors/data", method = RequestMethod.POST)
     private DeferredResult<String> receiveSensorsData(@RequestBody String data) {
         DeferredResult<String> result = new DeferredResult<>();
-        system.actorOf(SpringProps.create(system, ReceiverActor.class, result))
-                .tell(Integer.valueOf(data.substring(1,2)), ActorRef.noSender());
+        system.actorOf(SpringProps.create(system, ConsumerActor.class, result))
+                .tell(data, ActorRef.noSender());
         return result;
     }
 }

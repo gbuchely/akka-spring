@@ -1,38 +1,64 @@
-#version: '2'
-#services:
-#
-#  greeting:
-#    build: application
-#    ports:
-#      - 8081:8080
-#    environment:
-#          ACTOR_PROFILE: greeting
-#
-#  hello:
-#    build: application
-#    ports:
-#      - 8082:8080
-#    environment:
-#          ACTOR_PROFILE: hello
-
-#  cluster:
-#    build: application
-#    ports:
-#      - 8081:8080
-#    environment:
-#          ACTOR_PROFILE: executor,admin
-
 version: '2'
 services:
 
+#  greeting:
+#    build: application
+#    ports:
+#      - 8080:8080
+#    environment:
+#      SPRING_PROFILES_ACTIVE: greeting
+#      WEB_ENVIRONMENT: 'true'
+#
+#  node1:
+#    build: application
+#    ports:
+#      - 8081:8081
+#    environment:
+#      SPRING_PROFILES_ACTIVE: greeting1
+#      WEB_ENVIRONMENT: 'true'
+#
+#  node2:
+#    build: application
+#    ports:
+#      - 8082:8081
+#    environment:
+#      SPRING_PROFILES_ACTIVE: greeting2
+#      WEB_ENVIRONMENT: 'true'
+
   etcd:
-    image: akk
+    image: quay.io/coreos/etcd
     ports:
       - 2379:2379
     environment:
       ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2379
       ETCD_ADVERTISE_CLIENT_URLS: http://localhost:2379
 
+#  consumer:
+#    build: application
+#    depends_on:
+#      - etcd
+#    ports:
+#      - 10000:8080
+#    environment:
+#      SPRING_PROFILES_ACTIVE: consumer
+#      WEB_ENVIRONMENT: 'true'
+#
+#  worker:
+#    build: application
+#    depends_on:
+#      - etcd
+#    environment:
+#      SPRING_PROFILES_ACTIVE: worker
+#      WEB_ENVIRONMENT: 'false'
+
+#  etcd:
+#    image: quay.io/coreos/etcd
+#    ports:
+#      - 2379:2379
+#    environment:
+#      ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2379
+#      ETCD_ADVERTISE_CLIENT_URLS: http://localhost:2379
+#
   receiver:
     build: application
     depends_on:
@@ -50,13 +76,13 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: processor
       WEB_ENVIRONMENT: 'false'
-
-  transmitter:
-    build: application
-    depends_on:
-      - etcd
-    environment:
-      SPRING_PROFILES_ACTIVE: transmitter
-      WEB_ENVIRONMENT: 'true'
-    ports:
-      - 20000:8080
+#
+#  transmitter:
+#    build: application
+#    depends_on:
+#      - etcd
+#    environment:
+#      SPRING_PROFILES_ACTIVE: transmitter
+#      WEB_ENVIRONMENT: 'true'
+#    ports:
+#      - 20000:8080

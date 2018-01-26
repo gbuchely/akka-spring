@@ -3,7 +3,6 @@ package com.globant.demo;
 import akka.NotUsed;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
-import akka.actor.Props;
 import akka.cluster.Cluster;
 import akka.cluster.metrics.AdaptiveLoadBalancingGroup;
 import akka.cluster.metrics.CpuMetricsSelector;
@@ -17,15 +16,12 @@ import akka.http.javadsl.model.HttpResponse;
 import akka.routing.RoundRobinPool;
 import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
-import com.globant.demo.akka.actor.TransformationBackend;
-import com.globant.demo.akka.cluster.AdminNode;
-import com.globant.demo.akka.cluster.ExecutorNode;
+import com.globant.demo.actor.worker.WorkerActor;
 import com.globant.demo.config.spring.SpringExtension;
 import com.globant.demo.config.spring.SpringProps;
-import com.globant.demo.controller.Router;
+import com.globant.demo.router.Router;
 import com.globant.demo.processor.ProcessorActor;
 import com.globant.demo.transmitter.WebsocketHandler;
-import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +55,7 @@ public class DemoApplication {
 		SpringApplication.run(DemoApplication.class, args);
 
 		//AKKA HTTP
-	    /*
+		/*
 		final ApplicationContext context = SpringApplication.run(DemoApplication.class, args);
 		final ActorSystem system = context.getBean(ActorSystem.class);
 		final Http http = Http.get(system);
@@ -68,10 +64,11 @@ public class DemoApplication {
 		final Router router = context.getBean(Router.class);
 		final Flow<HttpRequest, HttpResponse, NotUsed> flow = router.createRoute().flow(system, materializer);
 		final CompletionStage<ServerBinding> binding = http
-				.bindAndHandle(flow, ConnectHttp.toHost("0.0.0.0", 8080), materializer);
+				.bindAndHandle(flow, ConnectHttp.toHost("0.0.0.0", 8081), materializer);
 
-		log.info("Server online at http://localhost:8080/\nPress RETURN to stop...");
-
+		log.info("Server online at http://localhost:8081/\nPress RETURN to stop...");
+		System.out.println("Server online at http://localhost:8081/\nPress RETURN to stop...");
+		*/
 		/*
 		System.in.read();
 
@@ -96,6 +93,24 @@ public class DemoApplication {
 
 		return system;
 	}
+	/*
+	@Bean("clusterProcessorRouter")
+	@Profile("consumer")
+	public ActorRef clusterProcessorRouter() {
+		List<String> path = singletonList("/user/localProcessorRouter");
+		return system.actorOf(new ClusterRouterGroup(new AdaptiveLoadBalancingGroup(CpuMetricsSelector.getInstance(), path),
+				new ClusterRouterGroupSettings(100, path, false, "processor")).props(), "clusterProcessorRouter");
+	}
+
+	@Bean("localProcessorRouter")
+	@Profile("worker")
+	public ActorRef localProcessorRouter() {
+		return system.actorOf(SpringProps.create(system, WorkerActor.class)
+				.withDispatcher("processor-dispatcher")
+				.withRouter(new RoundRobinPool(10)), "localProcessorRouter");
+	}
+	*/
+
 
 	@Bean("clusterProcessorRouter")
 	@Profile("receiver")
@@ -112,7 +127,7 @@ public class DemoApplication {
 				.withDispatcher("processor-dispatcher")
 				.withRouter(new RoundRobinPool(10)), "localProcessorRouter");
 	}
-
+	/*
 	@EnableWebSocket
 	@Profile("transmitter")
 	public class WebSocketConfiguration implements WebSocketConfigurer {
@@ -125,4 +140,5 @@ public class DemoApplication {
 			registry.addHandler(handler, "/robots/socket").setAllowedOrigins("*");
 		}
 	}
+	*/
 }

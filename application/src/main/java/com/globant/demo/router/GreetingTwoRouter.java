@@ -1,40 +1,34 @@
-package com.globant.demo.controller;
+package com.globant.demo.router;
 
-import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.http.javadsl.model.ContentTypes;
 import akka.http.javadsl.model.HttpEntities;
-import akka.http.javadsl.server.*;
-import com.globant.demo.akka.actor.GreetingActor;
-import com.globant.demo.akka.config.SpringExtension;
+import akka.http.javadsl.server.AllDirectives;
+import akka.http.javadsl.server.Route;
+import com.globant.demo.actor.GreetingTwoActor;
+import com.globant.demo.config.spring.SpringProps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.context.request.async.DeferredResult;
 
 import static akka.actor.ActorRef.noSender;
 
 @Component
-@Profile("greeting")
-public class GreetingRouter extends AllDirectives implements Router{
+@Profile("greeting2")
+public class GreetingTwoRouter extends AllDirectives implements Router {
 
-  private final ActorSystem system;
-  private final ActorRef runtimeActor;
-
-  public GreetingRouter(ActorSystem actorSystem, SpringExtension springExtension) {
-    this.system = actorSystem;
-      runtimeActor = system.actorOf(springExtension.props("greetingActor"));
-  }
+    @Autowired
+    private ActorSystem system;
 
     public Route createRoute() {
-        // This handler generates responses to `/hello?name=XXX` requests
         Route greetings =
                 parameterOptional("name", optName -> {
-                    runtimeActor.tell(new GreetingActor.Greet(optName.get()), noSender());
+                    DeferredResult<String> result = new DeferredResult<>();
+                    system.actorOf(SpringProps.create(system, GreetingTwoActor.class, result))
+                            .tell(new GreetingTwoActor.Greet(optName.get()), noSender());
                     String name = optName.orElse("Mister X");
-                    return complete("Hello " + name + "!");
+                    return complete("Hello " + name + ", from NODE 2!");
                 });
 
         return

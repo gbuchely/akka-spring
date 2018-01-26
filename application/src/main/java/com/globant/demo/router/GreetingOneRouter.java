@@ -1,39 +1,33 @@
-package com.globant.demo.controller;
+package com.globant.demo.router;
 
-import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.http.javadsl.model.ContentTypes;
 import akka.http.javadsl.model.HttpEntities;
-import akka.http.javadsl.server.AllDirectives;
-import akka.http.javadsl.server.Route;
-import com.globant.demo.akka.actor.GreetingActor;
-import com.globant.demo.akka.actor.HelloActor;
-import com.globant.demo.akka.config.SpringExtension;
+import akka.http.javadsl.server.*;
+import com.globant.demo.actor.GreetingOneActor;
+import com.globant.demo.config.spring.SpringProps;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.async.DeferredResult;
 
 import static akka.actor.ActorRef.noSender;
 
 @Component
-@Profile("hello")
-public class HelloRouter extends AllDirectives implements Router{
+@Profile("greeting1")
+public class GreetingOneRouter extends AllDirectives implements Router {
 
-  private final ActorSystem system;
-  private final ActorRef runtimeActor;
-
-  public HelloRouter(ActorSystem actorSystem, SpringExtension springExtension) {
-    this.system = actorSystem;
-      //runtimeActor = system.actorOf(springExtension.props("greetingActor"));
-      runtimeActor = system.actorOf(springExtension.props("helloActor"));
-  }
+    @Autowired
+    private ActorSystem system;
 
     public Route createRoute() {
-        // This handler generates responses to `/hello?name=XXX` requests
         Route greetings =
                 parameterOptional("name", optName -> {
-                    runtimeActor.tell(new HelloActor.Greet(optName.get()), noSender());
+                    DeferredResult<String> result = new DeferredResult<>();
+                    system.actorOf(SpringProps.create(system, GreetingOneActor.class, result))
+                            .tell(new GreetingOneActor.Greet(optName.get()), noSender());
                     String name = optName.orElse("Mister X");
-                    return complete("Hi " + name + " !!!!");
+                    return complete("Hello " + name + ", from NODE 1!");
                 });
 
         return
