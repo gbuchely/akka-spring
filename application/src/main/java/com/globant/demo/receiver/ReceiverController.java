@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
 @RestController
-@Profile("receiver")
+@Profile("receiver1")
 public class ReceiverController {
 
     @Autowired
@@ -22,7 +22,7 @@ public class ReceiverController {
     private DeferredResult<String> receiveSensorsData(@RequestBody String data) {
         DeferredResult<String> result = new DeferredResult<>();
         system.actorOf(SpringProps.create(system, ReceiverActor.class, result))
-                .tell(Integer.valueOf(data.substring(1,2)), ActorRef.noSender());
+                .tell(Integer.valueOf(data), ActorRef.noSender());
         return result;
     }
 }

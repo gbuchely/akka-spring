@@ -3,11 +3,11 @@ package com.globant.demo.controller;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.globant.demo.model.Greeting;
+import com.globant.demo.model.Work;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Profile("greeting")
@@ -26,5 +26,19 @@ public class GreetingController {
         return new Greeting(counter.incrementAndGet(),
                 String.format(template, name, actorProfile));
     }
+
+    @RequestMapping(value="/post")
+    public Work post(@RequestBody Work work) {
+        work.setDescription("Return edited");
+        return work;
+    }
+    /*
+    @RequestMapping(value="/post", method= RequestMethod.POST,consumes =
+            {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE},
+            produces={MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_JSON_VALUE})
+    public Greeting post(@RequestBody Greeting name) {
+        return new Greeting();
+    }
+    */
 
 }

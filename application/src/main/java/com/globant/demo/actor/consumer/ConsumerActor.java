@@ -3,6 +3,7 @@ package com.globant.demo.actor.consumer;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import com.globant.demo.config.Actor;
+import com.globant.demo.model.Work;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ public class ConsumerActor extends AbstractActor {
     private final DeferredResult<String> deferredResult;
 
     @Autowired
-    @Qualifier("clusterProcessorRouter")
+    @Qualifier("clusterDemoRouter")
     private ActorRef router;
 
     public ConsumerActor(DeferredResult<String> deferredResult) {
@@ -26,15 +27,15 @@ public class ConsumerActor extends AbstractActor {
     @Override
     public Receive createReceive() {
         return receiveBuilder()
-                .match(Integer.class, this::dispatch)
+                .match(Work.class, this::dispatch)
                 .match(String.class, this::complete)
                 .matchAny(this::unhandled)
                 .build();
     }
 
-    private void dispatch(Integer data) {
-        log.info("receiver dispatching the data: {}", data);
-        //router.tell(data, self());
+    private void dispatch(Work data) {
+        log.info("receiver dispatching the data: {}", data.getId());
+        router.tell(data, self());
     }
 
     private void complete(String result) {

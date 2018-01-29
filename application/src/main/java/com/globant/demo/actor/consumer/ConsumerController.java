@@ -2,7 +2,9 @@ package com.globant.demo.actor.consumer;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
+import com.globant.demo.config.Actor;
 import com.globant.demo.config.spring.SpringProps;
+import com.globant.demo.model.Work;
 import com.globant.demo.receiver.ReceiverActor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -20,10 +22,10 @@ public class ConsumerController {
     private ActorSystem system;
 
     @RequestMapping(value = "/sensors/data", method = RequestMethod.POST)
-    private DeferredResult<String> receiveSensorsData(@RequestBody String data) {
+    private DeferredResult<String> receiveSensorsData(@RequestBody Work work) {
         DeferredResult<String> result = new DeferredResult<>();
         system.actorOf(SpringProps.create(system, ConsumerActor.class, result))
-                .tell(data, ActorRef.noSender());
+                .tell(work, ActorRef.noSender());
         return result;
     }
 }

@@ -16,11 +16,13 @@ import akka.http.javadsl.model.HttpResponse;
 import akka.routing.RoundRobinPool;
 import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
+import com.globant.demo.actor.publisher.PublisherActor;
 import com.globant.demo.actor.worker.WorkerActor;
 import com.globant.demo.config.spring.SpringExtension;
 import com.globant.demo.config.spring.SpringProps;
 import com.globant.demo.router.Router;
 import com.globant.demo.processor.ProcessorActor;
+import com.globant.demo.transmitter.RobotActor;
 import com.globant.demo.transmitter.WebsocketHandler;
 import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
@@ -82,7 +84,7 @@ public class DemoApplication {
 	@Bean
 	public ActorSystem actorSystem(ApplicationContext context) {
 
-		ActorSystem system = ActorSystem.create("robotsystem", ConfigFactory.load());
+		ActorSystem system = ActorSystem.create("demosystem", ConfigFactory.load());
 		SpringExtension.getInstance().get(system).initialize(context);
 
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -93,52 +95,29 @@ public class DemoApplication {
 
 		return system;
 	}
-	/*
-	@Bean("clusterProcessorRouter")
+
+	@Bean("clusterDemoRouter")
 	@Profile("consumer")
 	public ActorRef clusterProcessorRouter() {
-		List<String> path = singletonList("/user/localProcessorRouter");
+		List<String> path = singletonList("/user/localDemoRouter");
 		return system.actorOf(new ClusterRouterGroup(new AdaptiveLoadBalancingGroup(CpuMetricsSelector.getInstance(), path),
-				new ClusterRouterGroupSettings(100, path, false, "processor")).props(), "clusterProcessorRouter");
+				new ClusterRouterGroupSettings(100, path, false, "worker")).props(), "clusterDemoRouter");
 	}
 
-	@Bean("localProcessorRouter")
+	@Bean("localDemoRouter")
 	@Profile("worker")
 	public ActorRef localProcessorRouter() {
 		return system.actorOf(SpringProps.create(system, WorkerActor.class)
 				.withDispatcher("processor-dispatcher")
-				.withRouter(new RoundRobinPool(10)), "localProcessorRouter");
-	}
-	*/
-
-
-	@Bean("clusterProcessorRouter")
-	@Profile("receiver")
-	public ActorRef clusterProcessorRouter() {
-		List<String> path = singletonList("/user/localProcessorRouter");
-		return system.actorOf(new ClusterRouterGroup(new AdaptiveLoadBalancingGroup(CpuMetricsSelector.getInstance(), path),
-				new ClusterRouterGroupSettings(100, path, false, "processor")).props(), "clusterProcessorRouter");
+				.withRouter(new RoundRobinPool(10)), "localDemoRouter");
 	}
 
-	@Bean("localProcessorRouter")
-	@Profile("processor")
-	public ActorRef localProcessorRouter() {
-		return system.actorOf(SpringProps.create(system, ProcessorActor.class)
-				.withDispatcher("processor-dispatcher")
-				.withRouter(new RoundRobinPool(10)), "localProcessorRouter");
+	@Bean("localPublisherRouter")
+	@Profile("publisher")
+	public ActorRef localPublisherRouter() {
+		System.out.println("PUB -> 1");
+		return system.actorOf(
+				SpringProps.create(system, PublisherActor.class, Integer.valueOf(2)));
 	}
-	/*
-	@EnableWebSocket
-	@Profile("transmitter")
-	public class WebSocketConfiguration implements WebSocketConfigurer {
 
-		@Autowired
-		private WebsocketHandler handler;
-
-		@Override
-		public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-			registry.addHandler(handler, "/robots/socket").setAllowedOrigins("*");
-		}
-	}
-	*/
 }

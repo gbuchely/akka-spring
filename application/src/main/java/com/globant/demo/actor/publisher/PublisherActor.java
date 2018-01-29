@@ -1,4 +1,4 @@
-package com.globant.demo.transmitter;
+package com.globant.demo.actor.publisher;
 
 import akka.actor.AbstractActor;
 import akka.cluster.pubsub.DistributedPubSub;
@@ -12,15 +12,13 @@ import org.springframework.web.socket.WebSocketSession;
 import java.io.IOException;
 
 @Actor
-public class RobotActor extends AbstractActor {
+public class PublisherActor extends AbstractActor {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private final WebSocketSession session;
     private final Integer robotId;
 
-    public RobotActor(WebSocketSession session, Integer robotId) {
-        System.out.println("...............................ROBOT...............................");
-        this.session = session;
+    public PublisherActor(Integer robotId) {
+        System.out.println("............................... INIT PUBLISHER...............................");
         this.robotId = robotId;
         DistributedPubSub.get(getContext().system())
                 .mediator()
@@ -44,7 +42,7 @@ public class RobotActor extends AbstractActor {
 
     private void sendDataToRobot(Integer data) throws IOException {
         log.info("sending message to robot {}: {}", robotId, data);
-        session.sendMessage(new TextMessage(data.toString()));
+        //session.sendMessage(new TextMessage(data.toString()));
     }
 
     private void processSubscription(DistributedPubSubMediator.SubscribeAck ack) {
