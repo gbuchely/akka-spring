@@ -11,7 +11,7 @@ import akka.cluster.pubsub.DistributedPubSubMediator;
 import com.globant.demo.config.Actor;
 import com.globant.demo.config.Counters;
 import com.globant.demo.model.Work;
-import com.globant.demo.processor.service.ProcessorService;
+import com.globant.demo.service.ProcessorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,13 +47,17 @@ public class WorkerActor extends AbstractActor {
     }
 
     private void process(Work work) {
-        log.info("processor working on data: {}", work.getId() + "" + work.getKey());
+        log.info("processor working on data: {}", work.getId() + " " + work.getKey());
+        work.setWorkerId(getSelf().path().toString());
+        mediator.tell(new DistributedPubSubMediator.Publish(String.valueOf("0"), work), self());
+        sender().tell("The task sent to publisher  # " + "0", self());
 
-        int computedValue = processorService.compute(5);
-        int targetRobot = random.nextInt(robotsCounter.intValue()) + 1;
+        // EXTENDER PARA UN SERVICIO UTIL
+        //int computedValue = processorService.compute(5);
+        //int targetRobot = random.nextInt(robotsCounter.intValue()) + 1;
 
         //ActorRef mediator = DistributedPubSub.get(getContext().getSystem()).mediator();
-        mediator.tell(new DistributedPubSubMediator.Publish(String.valueOf("2"), computedValue), self());
-        sender().tell("The task sent to robot #" + targetRobot, self());
+        //mediator.tell(new DistributedPubSubMediator.Publish(String.valueOf("0"), computedValue), self());
+        //sender().tell("The task sent to robot #" + targetRobot, self());
     }
 }

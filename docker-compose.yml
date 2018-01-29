@@ -33,35 +33,17 @@ services:
       ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2379
       ETCD_ADVERTISE_CLIENT_URLS: http://localhost:2379
 
-#  consumer:
-#    build: application
-#    depends_on:
-#      - etcd
-#    ports:
-#      - 10000:8080
-#    environment:
-#      SPRING_PROFILES_ACTIVE: consumer
-#      WEB_ENVIRONMENT: 'true'
-#
-#  worker:
-#    build: application
-#    depends_on:
-#      - etcd
-#    environment:
-#      SPRING_PROFILES_ACTIVE: worker
-#      WEB_ENVIRONMENT: 'false'
-
-  consumer:
+  consumer1:
     build: application
     depends_on:
       - etcd
     ports:
-      - 10000:8080
+      - 8180:8080
     environment:
       SPRING_PROFILES_ACTIVE: consumer
       WEB_ENVIRONMENT: 'true'
 
-  worker:
+  worker1:
     build: application
     depends_on:
       - etcd
@@ -69,7 +51,7 @@ services:
       SPRING_PROFILES_ACTIVE: worker
       WEB_ENVIRONMENT: 'false'
 
-  workerb:
+  worker2:
     build: application
     depends_on:
       - etcd
@@ -77,12 +59,20 @@ services:
       SPRING_PROFILES_ACTIVE: worker
       WEB_ENVIRONMENT: 'false'
 
-  publisher:
+  worker3:
+    build: application
+    depends_on:
+      - etcd
+    environment:
+      SPRING_PROFILES_ACTIVE: worker
+      WEB_ENVIRONMENT: 'false'
+
+  publisher1:
     build: application
     depends_on:
       - etcd
     environment:
       SPRING_PROFILES_ACTIVE: publisher
-      WEB_ENVIRONMENT: 'false'
+      WEB_ENVIRONMENT: 'true'
     ports:
-      - 20000:8080
+      - 8280:8080

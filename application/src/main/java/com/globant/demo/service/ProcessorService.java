@@ -1,4 +1,4 @@
-package com.globant.demo.processor.service;
+package com.globant.demo.service;
 
 public interface ProcessorService {
 

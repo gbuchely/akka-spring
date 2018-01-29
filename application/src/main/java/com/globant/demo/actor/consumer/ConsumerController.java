@@ -5,7 +5,6 @@ import akka.actor.ActorSystem;
 import com.globant.demo.config.Actor;
 import com.globant.demo.config.spring.SpringProps;
 import com.globant.demo.model.Work;
-import com.globant.demo.receiver.ReceiverActor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,8 +20,8 @@ public class ConsumerController {
     @Autowired
     private ActorSystem system;
 
-    @RequestMapping(value = "/sensors/data", method = RequestMethod.POST)
-    private DeferredResult<String> receiveSensorsData(@RequestBody Work work) {
+    @RequestMapping(value = "/input/data", method = RequestMethod.POST)
+    private DeferredResult<String> receiveInputData(@RequestBody Work work) {
         DeferredResult<String> result = new DeferredResult<>();
         system.actorOf(SpringProps.create(system, ConsumerActor.class, result))
                 .tell(work, ActorRef.noSender());

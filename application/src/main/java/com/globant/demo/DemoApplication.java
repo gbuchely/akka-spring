@@ -20,10 +20,6 @@ import com.globant.demo.actor.publisher.PublisherActor;
 import com.globant.demo.actor.worker.WorkerActor;
 import com.globant.demo.config.spring.SpringExtension;
 import com.globant.demo.config.spring.SpringProps;
-import com.globant.demo.router.Router;
-import com.globant.demo.processor.ProcessorActor;
-import com.globant.demo.transmitter.RobotActor;
-import com.globant.demo.transmitter.WebsocketHandler;
 import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -117,7 +113,7 @@ public class DemoApplication {
 	public ActorRef localPublisherRouter() {
 		System.out.println("PUB -> 1");
 		return system.actorOf(
-				SpringProps.create(system, PublisherActor.class, Integer.valueOf(2)));
+				SpringProps.create(system, PublisherActor.class, Integer.valueOf(0)));
 	}
 
 }

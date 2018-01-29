@@ -4,6 +4,8 @@ import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import com.globant.demo.config.Actor;
 import com.globant.demo.model.Work;
+import com.globant.demo.service.ConsumerService;
+import com.globant.demo.service.PublisherService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,9 @@ public class ConsumerActor extends AbstractActor {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final DeferredResult<String> deferredResult;
+
+    @Autowired
+    private ConsumerService consumerService;
 
     @Autowired
     @Qualifier("clusterDemoRouter")
@@ -34,6 +39,7 @@ public class ConsumerActor extends AbstractActor {
     }
 
     private void dispatch(Work data) {
+        data.setId(consumerService.getWorkId());
         log.info("receiver dispatching the data: {}", data.getId());
         router.tell(data, self());
     }

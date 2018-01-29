@@ -1,8 +1,11 @@
-package com.globant.demo.receiver;
+package com.globant.demo.actor.publisher;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
+import com.globant.demo.actor.consumer.ConsumerActor;
 import com.globant.demo.config.spring.SpringProps;
+import com.globant.demo.model.Work;
+import com.globant.demo.service.PublisherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,18 +14,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import java.util.List;
+
 @RestController
-@Profile("receiver1")
-public class ReceiverController {
+@Profile("publisher")
+public class PublisherController {
 
     @Autowired
-    private ActorSystem system;
+    private PublisherService service;
 
-    @RequestMapping(value = "/sensors/data", method = RequestMethod.POST)
-    private DeferredResult<String> receiveSensorsData(@RequestBody String data) {
-        DeferredResult<String> result = new DeferredResult<>();
-        system.actorOf(SpringProps.create(system, ReceiverActor.class, result))
-                .tell(Integer.valueOf(data), ActorRef.noSender());
-        return result;
+    @RequestMapping(value = "/output/data", method = RequestMethod.GET)
+    public List<Work> getWorkList() {
+        return service.getWorkList();
     }
 }
