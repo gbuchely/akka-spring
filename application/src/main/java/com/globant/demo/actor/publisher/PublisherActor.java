@@ -9,8 +9,6 @@ import com.globant.demo.service.PublisherService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
 
@@ -35,7 +33,7 @@ public class PublisherActor extends AbstractActor {
     @Override
     public Receive createReceive() {
         return receiveBuilder()
-                .match(TextMessage.class, this::processMessageFromRobot)
+                .match(Object.class, this::processMessageFromRobot)
                 .match(Integer.class, this::sendDataToRobot)
                 .match(Work.class, this::sendDataToRobot)
                 .match(DistributedPubSubMediator.SubscribeAck.class, this::processSubscription)
@@ -43,7 +41,7 @@ public class PublisherActor extends AbstractActor {
                 .build();
     }
 
-    private void processMessageFromRobot(TextMessage message) {
+    private void processMessageFromRobot(Object message) {
         log.info("received message from robot {}: {}", publisherId, message);
     }
 

@@ -25,13 +25,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
-import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
-import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
 import java.io.IOException;
 import java.util.List;
@@ -40,6 +41,7 @@ import java.util.concurrent.CompletionStage;
 import static akka.pattern.Patterns.ask;
 import static java.util.Collections.singletonList;
 
+@EnableEurekaClient
 @SpringBootApplication
 public class DemoApplication {
 
@@ -79,7 +81,7 @@ public class DemoApplication {
 
 	@Bean
 	public ActorSystem actorSystem(ApplicationContext context) {
-
+		System.out.println("------------------------ACTOR SYSTEM--------------------");
 		ActorSystem system = ActorSystem.create("demosystem", ConfigFactory.load());
 		SpringExtension.getInstance().get(system).initialize(context);
 

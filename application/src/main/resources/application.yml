@@ -6,8 +6,18 @@ spring:
     web-environment: ${WEB_ENVIRONMENT}
   profiles:
     active: ${SPRING_PROFILES_ACTIVE}
+  application:
+    name: akkaEureka1
 logging:
   level:
     ROOT: info
     akka.cluster: info
     com.sqshq: info
+eureka:
+   client:
+     serviceUrl:
+       defaultZone: http://localhost:8761/eureka/
+   instance:
+     hostname: akka_host
+     prefer-ip-address: true
+     ip-address: 123.123.123.123
