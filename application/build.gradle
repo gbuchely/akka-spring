@@ -41,6 +41,7 @@ dependencies {
     compile("com.typesafe.akka:akka-cluster-metrics_2.12:${akkaVersion}")
     compile("de.heikoseeberger:constructr_2.12:${constructrVersion}")
     compile("de.heikoseeberger:constructr-coordination-etcd_2.12:${constructrVersion}")
+    compile("com.github.everpeace:constructr-coordination-redis_2.12:0.0.4")
 
     runtime('org.springframework.boot:spring-boot-devtools')
 
